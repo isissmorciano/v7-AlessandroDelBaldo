@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<form method="get" action="{{ url_for('main.ricerca') }}">
+    <input type="text" name="q" placeholder="Cerca..." value="{{ ricerca if ricerca else '' }}">
+    <button type="submit">🔍 Cerca</button>
+</form>
+
 <h1>Categorie Disponibili</h1>
 
 {% for categoria in categories %}

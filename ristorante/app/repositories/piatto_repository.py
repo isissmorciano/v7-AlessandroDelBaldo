@@ -42,8 +42,15 @@ def get_piatto_by_id(piatto_id):
 def create_piatto(category_id, nome, prezzo):
     db = get_db()
     cursor = db.execute(
-        "INSERT INTO giochi (categoria_id, nome, prezzo) VALUES (?, ?, ?, ?)", 
+        "INSERT INTO piatti (categoria_id, nome, prezzo) VALUES (?, ?, ?)", 
         (category_id, nome, prezzo)
     )
     db.commit()
     return cursor.lastrowid
+
+def find_piatti_by_name(search_term):
+    db = get_db()
+    # %testo% → contiene  |  testo% → inizia con  |  %testo → finisce con
+    query = 'SELECT * FROM piatti WHERE nome LIKE ? ORDER BY nome'
+    piatti = db.execute(query, (f'%{search_term}%',)).fetchall()
+    return [dict(piatto) for piatto in piatti]

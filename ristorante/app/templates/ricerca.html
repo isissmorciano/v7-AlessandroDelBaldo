@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista Elementi</h1>
+
+<!-- Barra di ricerca (LIKE) -->
+<form method="get" action="{{ url_for('main.cerca') }}">
+    <input type="text" name="q" placeholder="Cerca..." value="{{ ricerca if ricerca else '' }}">
+    <button type="submit">🔍 Cerca</button>
+</form>
+
+{% for elemento in lista_elementi %}
+<article>
+    <h2>
+        <a href="{{ url_for('main.sottoelementi_elemento', id=elemento['id']) }}">
+            {{ elemento['campo1'] }}
+        </a>
+    </h2>
+    <p>campo2: {{ elemento['campo2'] }}</p>
+    <p>campo3: {{ elemento['campo3'] }}</p>
+
+    <a href="{{ url_for('main.edit_elemento', id=elemento['id']) }}">
+        <button class="modifica">✏️ Modifica</button>
+    </a>
+    <a href="{{ url_for('main.delete_elemento', id=elemento['id']) }}">
+        <button class="elimina">🗑 Elimina</button>
+    </a>
+</article>
+<hr>
+{% else %}
+    <p>Nessun elemento trovato.</p>
+{% endfor %}
+{% endblock %}

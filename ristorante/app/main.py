@@ -51,8 +51,8 @@ def crea_categoria():
 def crea_piatto():
     if request.method == "POST":
         categoria_id = request.form.get("categoria_id", type=int)
-        nome = request.form["titolo"]
-        prezzo = request.form["prezzo"]
+        nome = request.form["nome"]
+        prezzo = request.form.get("prezzo", type=int)
         error = None
 
         if not nome:
@@ -67,8 +67,14 @@ def crea_piatto():
         else:
             # Creiamo il video
             piatto_repository.create_piatto(categoria_id, nome, prezzo)
-            return redirect(url_for("main.categoria_detail", categoria_id=categoria_id))
+            return redirect(url_for("main.categoria_detail", id=categoria_id))
 
     # Per GET, passiamo i canali per il select
     categories = categoria_repository.get_all_categories()
     return render_template("create_piatto.html", categories=categories)
+
+@bp.route('/ricerca')
+def ricerca():
+    testo = request.args.get('q', '')   # prende il parametro GET dalla URL
+    risultati = piatto_repository.find_piatti_by_name(testo)
+    return render_template('index.html', lista_elementi=risultati, ricerca=testo)
