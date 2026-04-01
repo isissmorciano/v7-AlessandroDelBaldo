@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Crea Nuova Partita</h1>
+<form method="post">
+    <label for="categoria_id">Gioco</label>
+    <select name="categoria_id" id="categoria_id" required>
+        <option value="">Seleziona una categoria</option>
+        {% for category in categories %}
+        <option value="{{ category['id'] }}">{{ category['nome'] }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="nome">Nome Piatto</label>
+    <input name="data" id="data" required>
+
+    <label for="vincitore">Vincitore</label>
+    <input name="vincitore" id="vincitore" required>
+
+    <label for="punteggio_vincitore">Punteggio Vincitore</label>
+    <input name="punteggio_vincitore" id="punteggio_vincitore" type="number" min="0" required>
+
+    <input type="submit" value="Crea Piatto">
+</form>
+{% endblock %}

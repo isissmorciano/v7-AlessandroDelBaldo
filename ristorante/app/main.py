@@ -16,11 +16,11 @@ def index():
     return render_template("index.html", categories=categories)
 
 
-@bp.route("/channel/<int:id>")
-def channel_detail(id):
+@bp.route("/categoria/<int:id>")
+def categoria_detail(id):
     category = categoria_repository.get_category_by_id(id)
     if category is None:
-        abort(404, "Categoria non trovato.")
+        abort(404, "Categoria non trovata.")
 
     # 2. Prendiamo i video del canale
     piatti = piatto_repository.get_piatti_by_category(id)
@@ -30,7 +30,7 @@ def channel_detail(id):
 
 
 @bp.route("/crea_categoria", methods=("GET", "POST"))
-def create_channel():
+def crea_categoria():
     if request.method == "POST":
         nome = request.form["nome"]
         error = None
@@ -45,29 +45,30 @@ def create_channel():
             categoria_repository.create_category(nome)
             return redirect(url_for("main.index"))
 
-    return render_template("create_channel.html")
+    return render_template("create_categoria.html")
 
 @bp.route("/create_piatto", methods=("GET", "POST"))
-def create_video():
+def crea_piatto():
     if request.method == "POST":
         categoria_id = request.form.get("categoria_id", type=int)
         nome = request.form["titolo"]
         prezzo = request.form["prezzo"]
+        error = None
 
         if not nome:
-            error = "Il titolo è obbligatorio."
-        if durata is None or durata <= 0:
-            error = "La durata deve essere un numero positivo."
+            error = "Il nome è obbligatorio."
+        if prezzo is None or prezzo <= 0:
+            error = "Il prezzo deve essere un numero positivo."
         if categoria_id is None:
-            error = "Seleziona un canale."
+            error = "Seleziona una categoria."
 
         if error is not None:
             flash(error)
         else:
             # Creiamo il video
-            video_repository.create_video(canale_id, nome, durata, immagine)
-            return redirect(url_for("main.channel_detail", id=canale_id))
+            piatto_repository.create_piatto(categoria_id, nome, prezzo)
+            return redirect(url_for("main.categoria_detail", categoria_id=categoria_id))
 
     # Per GET, passiamo i canali per il select
-    channels = channel_repository.get_all_channels()
-    return render_template("create_video.html", channels=channels)
+    categories = categoria_repository.get_all_categories()
+    return render_template("create_piatto.html", categories=categories)
